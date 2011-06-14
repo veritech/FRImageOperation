@@ -1,0 +1,30 @@
+FRImageOperation
+================
+
+What is it?
+-----------
+
+FRImageOperation is an abstract class for creating NSOperations that allow for drawing in a background thread.
+
+Why would i use it?
+-------------------
+
+Well there are a number of reasons. I originally created it to create a large image composited from several other images without blocking the main thread.
+
+Other uses are pre-rendering overlays to avatars, applying masks etc.
+
+How do i use it?
+----------------
+
+Well you just override
+
+	-(void) renderInContext:(CGContextRef) aContext
+
+The end result can either be saved to the filesystem or you can add iVar to your subclass to and save your drawing to that and then access it from your completion block.
+
+Alternatively you can setup a delegate, that gets called after all the drawing is done. 
+
+Who are you?
+------------
+
+Jonathan Dalrymple [@veritech](http://twitter.com/veritech)
