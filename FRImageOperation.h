@@ -36,6 +36,8 @@
 
 @property (nonatomic,assign) CGSize canvasSize;
 
+- (id) initWithSize:(CGSize) aSize;
+
 - (void) renderInContext:(CGContextRef) aContext;
 
 @end

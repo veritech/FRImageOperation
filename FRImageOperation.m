@@ -36,13 +36,22 @@
 #pragma mark - Object life cycle
 - (id) init{
 	
-	if( (self = [super init]) ){
-		canvasSize_ = CGSizeZero();
-	}
+	if( !(self = [super init]) ) return nil;
+
+	[self setCanvasSize:CGSizeZero];
+
+	return self;
+}
+
+- (id) initWithSize:(CGSize) aSize{
+	
+	if( !(self = [self init]) ) return nil;
+	
+	[self setCanvasSize:aSize];
 	
 	return self;
 }
-	   
+
 - (void) dealloc {
     
     [super dealloc];
@@ -68,9 +77,6 @@
 	CGColorSpaceRef		colorSpace;
 	int					bitmapByteCount;
 	int					bitmapBytesPerRow;
-	
-	//Initialize the canvas size!
-	canvasSize = [backgroundImg size];
 	
 	//
 	bitmapBytesPerRow	= ([self canvasSize].width * 4);
