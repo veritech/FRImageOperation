@@ -89,14 +89,14 @@
 	
 	//Check the the buffer is alloc'd
 	if( bitmapData == NULL ){
-		DebugLog(@"Buffer could not be alloc'd");
+		NSLog(@"Buffer could not be alloc'd");
 	}
 	
 	//Create the context
 	context = CGBitmapContextCreate(bitmapData, [self canvasSize].width, [self canvasSize].height, 8, bitmapBytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);
 	
 	if( context == NULL ){
-		DebugLog(@"Context could not be created");
+		NSLog(@"Context could not be created");
 	}
 	
 	//Render user data	
