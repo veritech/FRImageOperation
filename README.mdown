@@ -1,10 +1,11 @@
-FRImageOperation
-================
+FRImageOperation & FRBlockImageOperation
+=======================================
 
 What is it?
 -----------
 
 FRImageOperation is an abstract class for creating NSOperations that allow for drawing in a background thread.
+FRBlockOperation does the same as the above, however instead of subclassing you can just a block.
 
 Why would i use it?
 -------------------
@@ -16,6 +17,8 @@ Other uses are pre-rendering overlays to avatars, applying masks etc.
 How do i use it?
 ----------------
 
+**FRImageOperation**
+
 Well you just override
 
 	-(void) renderInContext:(CGContextRef) aContext
@@ -23,6 +26,63 @@ Well you just override
 The end result can either be saved to the filesystem or you can add iVar to your subclass to and save your drawing to that and then access it from your completion block.
 
 Alternatively you can setup a delegate, that gets called after all the drawing is done. 
+
+**FRBlockImageOperation**
+
+All you really need to know is the initialiser.
+	
+	-(id)initWithSzie:(CGSize) canvasSize block:(FRBlockImageOperationBlock) aBlock
+
+However it that's not clear enough, the code below will draw a red 200x200 square 
+
+	FRImageBlockOperation *op;
+	CGSize canvasSize = CGSizeMake(200.0,200.0f);
+
+	op = [[FRImageBlockOperation alloc] initWithSize:canvasSize block:^(CGContextRef context){
+		
+		CGColorRef color = [[UIColor redColor] CGColor];
+
+		CGContextSetFillColor(context,color);
+
+		CGContextFillRect(context,CGRectMake(0,0,canvasSize.width,canvasSize.height));
+
+	}];
+
+The same code will work if it were placed inside a subclassed FRImageOperation. Now you may be wondering how you go about getting your final image out of the operation.
+To accompolish this you can assign a resultBlock. The resultBlock will be called after your rendering and takes a single argument, your rendered context as a UIImage.
+
+	[op setResultBlock:^(UIImage *image){
+		//Do as you please with your new image
+	}];
+
+Note, that the block will be called on the same thread as the operation used to process your rendering, so if you want to interact with UIKit here you need to get back on the main thread.
+
+License
+-------
+
+ Copyright (c) 2011-2012 Jonathan Dalrymple
+ 
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation
+ files (the "Software"), to deal in the Software without
+ restriction, including without limitation the rights to use,
+ copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following
+ conditions:
+ 
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ OTHER DEALINGS IN THE SOFTWARE.
+
 
 Who are you?
 ------------
