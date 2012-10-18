@@ -24,17 +24,15 @@
 //  FRImageOperation.m
 //
 //  Created by Jonathan Dalrymple
-//  Copyright 2011 Jonathan Dalrymple. All rights reserved.
+//  Copyright 2011-2012 Jonathan Dalrymple. All rights reserved.
 //
 
 #import "FRImageOperation.h"
 
 @implementation FRImageOperation
 
-@synthesize canvasSize = canvasSize_;
-
 #pragma mark - Object life cycle
-- (id) init{
+- (id)init{
 	
 	if( !(self = [super init]) ) return nil;
 
@@ -43,7 +41,7 @@
 	return self;
 }
 
-- (id) initWithSize:(CGSize) aSize{
+- (id)initWithSize:(CGSize) aSize{
 	
 	if( !(self = [self init]) ) return nil;
 	
@@ -52,72 +50,71 @@
 	return self;
 }
 
-- (void) dealloc {
-    
-    [super dealloc];
-}
 
 #pragma mark - Methods to be overridden
 /**
  *	This method is to overridden by subclasses
  */
-- (void) renderInContext:(CGContextRef) aContext{
+- (void)renderInContext:(CGContextRef) aContext{
 	//Go forth and draw!!
 }
 
 #pragma mark - boilerplate
 
-- (void) main{
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	//////////////////////////////////////////
-	
-	CGContextRef		context;
-	void				*bitmapData;
-	CGColorSpaceRef		colorSpace;
-	int					bitmapByteCount;
-	int					bitmapBytesPerRow;
-	
-	//
-	bitmapBytesPerRow	= ([self canvasSize].width * 4);
-	bitmapByteCount		= (bitmapBytesPerRow * [self canvasSize].height);
-	
-	//Create the color space
-	colorSpace = CGColorSpaceCreateDeviceRGB();
-	
-	bitmapData = malloc( bitmapByteCount );
-	
-	//Check the the buffer is alloc'd
-	if( bitmapData == NULL ){
-		NSLog(@"Buffer could not be alloc'd");
-	}
-	
-	//Create the context
-	context = CGBitmapContextCreate(bitmapData, [self canvasSize].width, [self canvasSize].height, 8, bitmapBytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);
-	
-	if( context == NULL ){
-		NSLog(@"Context could not be created");
-	}
-	
-	//Render user data	
-	[self renderInContext:context];
-	
-	//The contents of the context could be saved out as follows
-	//Get the result image
-	// resultImage = CGBitmapContextCreateImage(context);
-	// 
-	// //Save the image to the photos album
-	// UIImageWriteToSavedPhotosAlbum( [UIImage imageWithCGImage:resultImage],self,@selector(image:error:context:),NULL);
-	// 
-	// CGImageRelease(resultImage);
-	
-	//Cleanup
-	free(bitmapData);
-	CGColorSpaceRelease(colorSpace);
-		
-	//////////////////////////////////////////
-	[pool drain];
-	
+- (void)main{
+
+  CGContextRef		context;
+  void				*bitmapData;
+  CGColorSpaceRef		colorSpace;
+  int					bitmapByteCount;
+  int					bitmapBytesPerRow;
+  
+  @autoreleasepool {
+    //////////////////////////////////////////
+    
+    bitmapBytesPerRow	= ([self canvasSize].width * 4);
+    bitmapByteCount		= (bitmapBytesPerRow * [self canvasSize].height);
+    
+    //Create the color space
+    colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    bitmapData = malloc( bitmapByteCount );
+    
+    //Check the the buffer is alloc'd
+    if (bitmapData == NULL) {
+      NSLog(@"Buffer could not be alloc'd");
+    }
+    
+    //Create the context
+    context = CGBitmapContextCreate(bitmapData, [self canvasSize].width, [self canvasSize].height, 8, bitmapBytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);
+    
+    if (context == NULL) {
+      NSLog(@"Context could not be created");
+    }
+    
+    //Render user data	
+    [self renderInContext:context];
+    
+    //If they want a result we convert the context to a UIImage
+    if ([self resultBlock]) {
+      
+      CGImageRef image;
+      
+      image = CGBitmapContextCreateImage(context);
+      
+      [self resultBlock]([UIImage imageWithCGImage:image]);
+      
+      CGImageRelease(image);
+      
+    }
+    
+    //Cleanup
+    free(bitmapData);
+    CGColorSpaceRelease(colorSpace);
+      
+    //////////////////////////////////////////
+  }
+
 }
 
 @end

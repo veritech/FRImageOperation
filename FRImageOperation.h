@@ -24,20 +24,23 @@
 //  FRImageOperation.h
 //
 //  Created by Jonathan Dalrymple
-//  Copyright 2011 Jonathan Dalrymple. All rights reserved.
+//  Copyright 2011-2012 Jonathan Dalrymple. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 
-@interface FRImageOperation : NSOperation {
-	CGSize	canvasSize_;
-}
+typedef void(^FRImageOperationResultBlock)(UIImage *image);
+
+@interface FRImageOperation : NSOperation
 
 @property (nonatomic,assign) CGSize canvasSize;
 
-- (id) initWithSize:(CGSize) aSize;
 
-- (void) renderInContext:(CGContextRef) aContext;
+@property (nonatomic,strong) FRImageOperationResultBlock resultBlock;
+
+- (id)initWithSize:(CGSize) aSize;
+
+- (void)renderInContext:(CGContextRef) aContext;
 
 @end
