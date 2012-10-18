@@ -1,4 +1,4 @@
-// Copyright (c) 2011 Jonathan Dalrymple
+// Copyright (c) 2011-2012 Jonathan Dalrymple
 // 
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -22,9 +22,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 //  FRImageOperation.h
-//
-//  Created by Jonathan Dalrymple
-//  Copyright 2011-2012 Jonathan Dalrymple. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
