@@ -33,7 +33,7 @@ All you really need to know is the initialiser.
 	
 	-(id)initWithSzie:(CGSize) canvasSize block:(FRBlockImageOperationBlock) aBlock
 
-However it that's not clear enough, the code below will draw a red 200x200 square 
+However if that's not clear enough, the code below will draw a red 200x200 square 
 
 	FRImageBlockOperation *op;
 	CGSize canvasSize = CGSizeMake(200.0,200.0f);
